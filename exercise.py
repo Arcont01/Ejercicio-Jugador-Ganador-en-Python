@@ -1,20 +1,29 @@
 import os.path
+import pathlib
 
 class Players:
     def play(self, routeFile):
         array = self.openFile(routeFile)
-        self.checkContent(array)
+        if array is not None:
+            self.checkContent(array)
 
     def openFile(self, routeFile):
-        if os.path.exists(routeFile):
-            name, extension = os.path.splitext(routeFile)
-            if(extension == '.txt'):
-                file = open(routeFile, 'r')
-                array = file.read().splitlines()
-                file.close()
-                return array
-            else:
-                print('el archivo debe de ser tipo TXT')
+        path = pathlib.Path(routeFile);
+        if path.exists():
+            if os.path.exists(routeFile):
+                name, extension = os.path.splitext(routeFile)
+                if(extension == '.txt'):
+                    try:
+                        file = open(routeFile, 'r')
+                        array = file.read().splitlines()
+                        file.close()
+                        return array
+                    except IOError:
+                        print('Archivo no existe')
+                else:
+                    print('el archivo debe de ser tipo TXT')
+        else:
+            print('No existe el archivo')
     def checkContent(self, arrayContent):
         rounds = int(arrayContent[0])
         arrayContent.pop(0)
