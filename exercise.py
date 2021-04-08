@@ -19,7 +19,7 @@ class Players:
                         file.close()
                         return array
                     except IOError:
-                        print('Archivo no existe')
+                        print('Error al tratar de leer archivo')
                 else:
                     print('el archivo debe de ser tipo TXT')
         else:
