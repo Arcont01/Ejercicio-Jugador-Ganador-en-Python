@@ -5,7 +5,13 @@ class Players:
     def play(self, routeFile):
         array = self.openFile(routeFile)
         if array is not None:
-            self.checkContent(array)
+            rounds = self.checkRounds(array)
+            if rounds != 0:
+                response = self.checkContent(rounds,array)
+                if response == 0:
+                    print('Solo se pueden 2 jugadores')
+            else:
+                print('Las rondas no pueden ser mayor a 10000')
 
     def openFile(self, routeFile):
         path = pathlib.Path(routeFile);
@@ -24,13 +30,25 @@ class Players:
                     print('el archivo debe de ser tipo TXT')
         else:
             print('No existe el archivo')
-    def checkContent(self, arrayContent):
-        rounds = int(arrayContent[0])
-        arrayContent.pop(0)
+
+    def checkRounds(self, content):
+        rounds = int(content[0])
+        content.pop(0)
+
+        if rounds > 10000:
+           return 0
+
+        return rounds
+
+    def checkContent(self, rounds, arrayContent):
         winnerPlayers = []
         differences = []
         for i in range(rounds):
            temp = arrayContent[i].split()
+
+           if(len(temp) != 2):
+                return 0;
+
            firstPlayer = int(temp[0])
            secondPlayer = int(temp[1])
 
@@ -48,6 +66,7 @@ class Players:
 
         print('El jugador: ' + str(winnerPlayer) + ' gano, en la ronda ' + str(index + 1))
         print('Con una diferencia de: ' + str(maxPoint))
+        return 1
 
 
 routeFile = input('Por favor escriba el nombre del archivo: ')
