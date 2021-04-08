@@ -1,19 +1,27 @@
 import os.path
 
-routeFile = input('Por favor escriba el nombre del archivo: ')
+class Players:
+    def play(self, routeFile):
+        array = self.openFile(routeFile)
+        self.checkContent(array)
 
-if os.path.exists(routeFile):
-    name, extension = os.path.splitext(routeFile)
-    if extension == '.txt':
-        file = open(routeFile, 'r')
-        array = file.read().splitlines()
-        file.close()
-        rounds = int(array[0])
-        array.pop(0)
+    def openFile(self, routeFile):
+        if os.path.exists(routeFile):
+            name, extension = os.path.splitext(routeFile)
+            if(extension == '.txt'):
+                file = open(routeFile, 'r')
+                array = file.read().splitlines()
+                file.close()
+                return array
+            else:
+                print('el archivo debe de ser tipo TXT')
+    def checkContent(self, arrayContent):
+        rounds = int(arrayContent[0])
+        arrayContent.pop(0)
         winnerPlayers = []
         differences = []
         for i in range(rounds):
-           temp = array[i].split()
+           temp = arrayContent[i].split()
            firstPlayer = int(temp[0])
            secondPlayer = int(temp[1])
 
@@ -32,9 +40,10 @@ if os.path.exists(routeFile):
         print('El jugador: ' + str(winnerPlayer) + ' gano, en la ronda ' + str(index + 1))
         print('Con una diferencia de: ' + str(maxPoint))
 
-    else:
-        print('El archivo debe ser .txt')
-else:
-    print('El archivo no existe')
+
+routeFile = input('Por favor escriba el nombre del archivo: ')
+
+object = Players()
+object.play(routeFile)
 
 
