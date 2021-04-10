@@ -1,20 +1,25 @@
 import os.path
 import pathlib
 import logging
+import re
 from os import system
+logging.basicConfig(filename='logs.log',
+                    filemode='a',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
+
 
 class Players:
     def play(self, routeFile):
         array = self.openFile(routeFile)
         if array is not None:
             rounds = self.checkRounds(array)
-            if rounds != 0:
-                response = self.checkContent(rounds,array)
-            else:
-                raise Exception('Las rondas no pueden ser mayor a 10000')
+
+        self.checkContent(rounds, array)
 
     def openFile(self, routeFile):
-        path = pathlib.Path(routeFile);
+        path = pathlib.Path(routeFile)
         if path.exists():
             if os.path.exists(routeFile):
                 name, extension = os.path.splitext(routeFile)
@@ -33,12 +38,17 @@ class Players:
 
     def checkRounds(self, content):
         rounds = content[0]
+        if re.fullmatch(r'\d', rounds) is None:
+            raise Exception('No puedes definir rondas con strings')
 
         rounds = int(rounds)
-        content.pop(0)  
+        content.pop(0)
 
         if rounds > 10000:
-           return 0
+            raise Exception('Las rondas no pueden ser mayor a 10000')
+        elif rounds == 0:
+            raise Exception(
+                'No es posible jugar con una definicion de 0 rondas')
 
         return rounds
 
@@ -47,34 +57,34 @@ class Players:
         differences = []
 
         if rounds != len(arrayContent):
-            raise Exception('El numero de rounds definido es diferente a los que juegan los jugadores')
+            raise Exception(
+                'El numero de rounds definido es diferente a los que juegan los jugadores')
 
         for i in range(rounds):
-           temp = arrayContent[i].split()
+            temp = arrayContent[i].split()
 
-           if(len(temp) != 2):
-               raise Exception('Las rondas son unicamente de 2 jugadores')
+            if(len(temp) != 2):
+                raise Exception('Las rondas son unicamente de 2 jugadores')
 
-           firstPlayer = int(temp[0])
-           secondPlayer = int(temp[1])
+            firstPlayer = int(temp[0])
+            secondPlayer = int(temp[1])
 
-           if firstPlayer > secondPlayer:
-               winnerPlayers.append(1)
-               tempDifference = firstPlayer - secondPlayer
-           else:
-               winnerPlayers.append(2)
-               tempDifference = secondPlayer - firstPlayer
-           
-           differences.append(tempDifference)
-           
+            if firstPlayer > secondPlayer:
+                winnerPlayers.append(1)
+                tempDifference = firstPlayer - secondPlayer
+            else:
+                winnerPlayers.append(2)
+                tempDifference = secondPlayer - firstPlayer
 
-            
+            differences.append(tempDifference)
+
         maxPoint = max(differences)
         index = differences.index(maxPoint)
         winnerPlayer = winnerPlayers[index]
 
         print('Gano el jugador numero:', str(winnerPlayer))
         print('Con una diferencia de puntos de:', str(maxPoint))
+
 
 try:
     routeFile = input('Por favor escriba el nombre del archivo: ')
@@ -83,5 +93,4 @@ try:
 except Exception as e:
     system('clear')
     logging.error(e)
-
-
+    print('Error: ', e)
