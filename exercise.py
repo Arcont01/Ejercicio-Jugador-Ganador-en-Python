@@ -66,6 +66,9 @@ class Players:
             if(len(temp) != 2):
                 raise Exception('Las rondas son unicamente de 2 jugadores')
 
+            if re.fullmatch(r'\d', temp[0]) is None or re.fullmatch(r'\d', temp[1]) is None:
+                raise Exception('Solo se puede calcular puntos de diferencia con numeros enteros')
+
             firstPlayer = int(temp[0])
             secondPlayer = int(temp[1])
 
